@@ -1,0 +1,154 @@
+{% extends './index.html' %}
+
+{% block title %}
+Materias
+{% endblock %}
+
+{% block body %}
+<div class="table-data">
+    <div class="order">
+        <main class="table" id="customers_table">
+            <section class="table__header">
+                <h1>Gestión de Materias</h1>
+                <div class="input-group">
+                    <input type="search" placeholder="Buscar Materia...">
+                    <img src="/static/img/search.png" alt="">
+                </div>
+                
+                <div class="export__file">
+                    <label for="export-file" class="export__file-btn" title="Exportar Archivo"></label>
+                    <input type="checkbox" id="export-file">
+                    <div class="export__file-options">
+                        <label>Exportar Como &nbsp; &#10140;</label>
+                        <label for="export-file" id="toPDF">PDF <img src="/static/img/pdf.png" alt=""></label>
+                        <label for="export-file" id="toJSON">JSON <img src="/static/img/json.png" alt=""></label>
+                        <label for="export-file" id="toCSV">CSV <img src="/static/img/csv.png" alt=""></label>
+                        <label for="export-file" id="toEXCEL">EXCEL <img src="/static/img/excel.png" alt=""></label>
+                    </div>
+                </div>
+            </section>
+            <section class="table__body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th> Id <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Nombre <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Carrera <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Estado <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Acciones <span class="icon-arrow">&UpArrow;</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for materia in materias %}
+                        <tr>
+                            <td>{{ materia.id }}</td>
+                            <td>{{ materia.nombre }}</td>
+                            <td>{{ materia.carrera_nombre }}</td>
+                            <td>{{ materia.estado }}</td>
+                            <td>
+                                <form action="/delete_materia/{{ materia.id }}" method="post" style="display:inline;">
+                                    <input type="submit" value="Inactivar">
+                                </form>
+                                <button type="button" onclick="showEditModal('{{ materia.id }}', '{{ materia.nombre }}', '{{ materia.carrera_id }}', '{{ materia.estado }}')">Editar</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <div class="todo">
+        <div class="head">
+            <h3>Tareas</h3>            
+        </div>
+        <form id="addMateriaForm" action="/add_materia" method="post">
+            <ul class="todo-list">
+                <li class="completed">
+                    <div class="container">
+                        <input type="text" name="nombre" class="input" required="">
+                        <label class="label">Nombre de la materia</label>
+                    </div>                
+                </li>
+                <li class="not-completed">
+                    <div class="container">
+                        <select name="carrera_id" class="input" required="">
+                            <option value="">Seleccione Carrera</option>
+                            {% for carrera in carreras %}
+                            <option value="{{ carrera.id }}">{{ carrera.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                        <label class="label">Carrera</label>
+                    </div>                
+                </li>
+                <li class="completed">
+                    <div class="container">
+                        <input type="number" name="estado" class="input" required="">
+                        <label class="label">Estado de la materia</label>
+                    </div>                
+                </li>
+                <li class="not-completed">
+                    <button class="button" type="submit" value="Agregar Materia">Agregar Materia</button>
+                </li>
+            </ul>
+        </form>
+    </div>
+</div>
+
+<!-- Modal para Actualizar Materia -->
+<div id="editModal" class="modal">
+    <div class="modal-content login-box">
+        <span class="close" onclick="closeEditModal()">&times;</span>
+        <h2>Actualizar Materia</h2>
+        <form id="updateMateriaForm" action="/update_materia" method="post">
+            <div class="user-box">
+                <input type="hidden" id="materiaId" name="id">
+            </div>
+            <div class="user-box">
+                <input type="text" id="updateNombreMateria" name="nombre" required="">
+                <label>Nombre actualizado</label>
+            </div>
+            <div class="user-box">
+                <select id="updateCarreraId" name="carrera_id" required="">
+                    <option value="">Seleccione Carrera</option>
+                    {% for carrera in carreras %}
+                    <option value="{{ carrera.id }}">{{ carrera.nombre }}</option>
+                    {% endfor %}
+                </select>
+                <label>Carrera actualizada</label>
+            </div>
+            <div class="user-box">
+                <input type="number" id="updateEstadoMateria" name="estado" required="">
+                <label>Estado actualizado</label>
+            </div>
+            <center>
+                <a href="#" onclick="document.getElementById('updateMateriaForm').submit(); return false;">
+                    Actualizar Materia
+                    <span></span>
+                </a>
+            </center>
+        </form>
+    </div>
+</div>
+
+<script>
+    function showEditModal(id, nombre, carrera_id, estado) {
+        document.getElementById('materiaId').value = id;
+        document.getElementById('updateNombreMateria').value = nombre;
+        document.getElementById('updateCarreraId').value = carrera_id;
+        document.getElementById('updateEstadoMateria').value = estado;
+        document.getElementById('editModal').style.display = 'block';
+    }
+
+    function closeEditModal() {
+        document.getElementById('editModal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        if (event.target == document.getElementById('editModal')) {
+            closeEditModal();
+        }
+    }
+</script>
+{% endblock %}

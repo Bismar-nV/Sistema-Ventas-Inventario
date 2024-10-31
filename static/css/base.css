@@ -1,0 +1,17 @@
+th,
+td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+body{
+  background-image: url(/Proyecto\ tabla\ Estadisticas/images/bg4.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+}
+.container11{
+  margin-left: 5px;
+  margin-right: 5px;
+}

@@ -1,0 +1,178 @@
+{% extends './index.html' %}
+
+{% block title %}
+Asistencias
+{% endblock %}
+
+{% block body %}
+<div class="table-data">
+    <div class="order">
+        <div class="todo">
+            <div class="head">
+                <h3>ASISTENCIA CON RECONOCIMIENTO FACIAL</h3>            
+            </div>
+            <form id="reconocimientoFacialForm" action="/reconocimiento_facial" method="post">
+                <ul class="todo-list">
+                    <li class="completed">
+                        <div class="container">
+                            <div id="camera" style="text-align:center;">
+                                <button class="button1" type="button" onclick="reconocimientofacial()"><p>Reconocimiento Facial</p></button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </form>
+        </div>
+        <main class="table" id="asistencias_table">
+            <section class="table__header">
+                <h1>Gestión de Asistencias</h1>
+                <div class="input-group">
+                    <input type="search" id="searchInput" onkeyup="searchTable()" placeholder="Buscar por nombre...">
+                    <img src="/static/img/search.png" alt="">
+                </div>
+                <div class="date-time-group">
+                    <label for="startTime">Hora de inicio:</label>
+                    <input type="time" id="startTime">
+                    <label for="endTime">Hora de fin:</label>
+                    <input type="time" id="endTime">
+                    <label for="currentDate">Fecha actual:</label>
+                    <input type="date" id="currentDate">
+                </div>
+            </section>
+            <section class="table__body">
+                <table id="asistenciaTable">
+                    <thead>
+                        <tr>
+                            <th> Id <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Nombre <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Tipo Persona <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Fecha <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Hora <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Presente <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Estado <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Acciones <span class="icon-arrow">&UpArrow;</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for asistencia in asistencias %}
+                        <tr>
+                            <td>{{ asistencia.id }}</td>
+                            <td>{{ asistencia.nombre }}</td>
+                            <td>{{ asistencia.tipo_persona }}</td>
+                            <td>{{ asistencia.fecha }}</td>
+                            <td>{{ asistencia.hora }}</td>
+                            <td>{{ 'Sí' if asistencia.presente else 'No' }}</td>
+                            <td>{{ 'Activo' if asistencia.estado == 1 else 'Inactivo' }}</td>
+                            <td>
+                                <form action="/delete_asistencia/{{ asistencia.id }}" method="post" style="display:inline;">
+                                    <input type="submit" value="Inactivar">
+                                </form>
+                                <button type="button" onclick="showEditModal('{{ asistencia.id }}', '{{ asistencia.presente }}', '{{ asistencia.estado }}')">Editar</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+</div>
+
+<!-- Modal para Actualizar Asistencia -->
+<div id="editModal" class="modal">
+    <div class="modal-content login-box">
+        <span class="close" onclick="closeEditModal()">&times;</span>
+        <h2>Actualizar Asistencia</h2>
+        <form id="updateAsistenciaForm" action="/update_asistencia" method="post">
+            <div class="user-box">
+                <input type="hidden" id="asistenciaId" name="id">
+            </div>
+            <div class="user-box">
+                <input type="checkbox" id="updatePresente" name="presente">
+                <label>Presente</label>
+            </div>
+            <div class="user-box">
+                <select id="updateEstado" name="estado">
+                    <option value="1">Activo</option>
+                    <option value="0">Inactivo</option>
+                </select>
+                <label>Estado</label>
+            </div>
+            <center>
+                <a href="#" onclick="document.getElementById('updateAsistenciaForm').submit(); return false;">
+                    Actualizar Asistencia
+                    <span></span>
+                </a>
+            </center>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+        // Set default date and time
+        const now = new Date();
+        document.getElementById('currentDate').value = now.toISOString().split('T')[0];
+        document.getElementById('startTime').value = now.toTimeString().split(' ')[0].substr(0, 5);
+        document.getElementById('endTime').value = now.toTimeString().split(' ')[0].substr(0, 5);
+    });
+
+    function showEditModal(id, presente, estado) {
+        document.getElementById('asistenciaId').value = id;
+        document.getElementById('updatePresente').checked = presente === 'True';
+        document.getElementById('updateEstado').value = estado;
+        document.getElementById('editModal').style.display = 'block';
+    }
+
+    function closeEditModal() {
+        document.getElementById('editModal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        if (event.target == document.getElementById('editModal')) {
+            closeEditModal();
+        }
+    }
+
+    function reconocimientofacial() {
+        fetch('/reconocimiento_facial', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Reconocimiento facial iniciado.');
+            } else {
+                alert('Error al iniciar el reconocimiento facial.');
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+
+    function searchTable() {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("searchInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("asistenciaTable");
+        tr = table.getElementsByTagName("tr");
+
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[2]; // Columna del nombre
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }       
+        }
+    }
+</script>
+{% endblock %}

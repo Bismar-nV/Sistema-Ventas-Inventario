@@ -1,0 +1,188 @@
+{% extends './index.html' %}
+
+{% block title %}
+Usuarios
+{% endblock %}
+
+{% block body %}
+<div class="table-data">
+    <div class="order">
+        <main class="table" id="customers_table">
+            <section class="table__header">
+                <h1>Gestión de Usuarios</h1>
+                <div class="input-group">
+                    <input type="search" placeholder="Buscar Usuario...">
+                    <img src="{{ url_for('static', filename='img/search.png') }}" alt="">
+                </div>
+            <!--div class="export__file">
+                    <label for="export-file" class="export__file-btn" title="Exportar Archivo"></label>
+                    <input type="checkbox" id="export-file">
+                    <div class="export__file-options">
+                        <label>Exportar Como &nbsp; &#10140;</label>
+                        <label for="export-file" id="toPDF">PDF <img src="{{ url_for('static', filename='img/pdf.png') }}" alt=""></label>
+                        <label for="export-file" id="toJSON">JSON <img src="{{ url_for('static', filename='img/json.png') }}" alt=""></label>
+                        <label for="export-file" id="toCSV">CSV <img src="{{ url_for('static', filename='img/csv.png') }}" alt=""></label>
+                        <label for="export-file" id="xtoEXCEL">EXCEL <img src="{{ url_for('static', filename='img/excel.png') }}" alt=""></label>
+                    </div>
+                </div-->
+            </section>
+            <section class="table__body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th> Id <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Nombre <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Apellido <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> CI <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Rol <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Username <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Estado <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Acciones <span class="icon-arrow">&UpArrow;</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for usuario in usuarios %}
+                        <tr>
+                            <td>{{ usuario.id }}</td>
+                            <td>{{ usuario.nombre }}</td>
+                            <td>{{ usuario.apellido }}</td>
+                            <td>{{ usuario.ci }}</td>
+                            <td>{{ usuario.rol }}</td>
+                            <td>{{ usuario.username }}</td>
+                            <td>{{ 'Activo' if usuario.estado == 1 else 'Inactivo' }}</td>
+                            <td>
+                                <form action="/delete_usuario/{{ usuario.id }}" method="post" style="display:inline;">
+                                    <input type="submit" value="Inactivar">
+                                </form>
+                                <button type="button" onclick="showEditModal('{{ usuario.id }}', '{{ usuario.nombre }}', '{{ usuario.apellido }}', '{{ usuario.ci }}', '{{ usuario.rol }}', '{{ usuario.username }}', '{{ usuario.estado }}')">Editar</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <div class="todo">
+        <div class="head">
+            <h3>Tareas</h3>            
+        </div>
+        <form id="addUsuarioForm" action="/add_usuario" method="post">
+            <ul class="todo-list">
+                <li class="completed">
+                    <div class="container">
+                        <input type="text" name="nombre" class="input" required="">
+                        <label class="label">Nombre del usuario</label>
+                    </div>                
+                </li>
+                <li class="completed">
+                    <div class="container">
+                        <input type="text" name="apellido" class="input" required="">
+                        <label class="label">Apellido del usuario</label>
+                    </div>                
+                </li>
+                <li class="completed">
+                    <div class="container">
+                        <input type="text" name="ci" class="input" required="">
+                        <label class="label">CI del usuario</label>
+                    </div>                
+                </li>
+                <li class="completed">
+                    <div class="container">
+                        <input type="text" name="rol" class="input" required="">
+                        <label class="label">Rol del usuario</label>
+                    </div>                
+                </li>
+                <li class="completed">
+                    <div class="container">
+                        <input type="text" name="username" class="input" required="">
+                        <label class="label">Username del usuario</label>
+                    </div>                
+                </li>
+                <li class="completed">
+                    <div class="container">
+                        <input type="password" name="password" class="input" required="">
+                        <label class="label">Contraseña</label>
+                    </div>                
+                </li>
+                <li class="completed">
+                    <div class="container">
+                        <input type="password" name="verificacion_password" class="input" required="">
+                        <label class="label">Verificar de Contraseña</label>
+                    </div>                
+                </li>
+                <li class="not-completed">
+                    <button class="button" type="submit" value="Agregar Usuario">Agregar Usuario</button>
+                </li>
+            </ul>
+        </form>
+    </div>
+</div>
+
+<!-- Modal para Actualizar Usuario -->
+<div id="editModal" class="modal">
+    <div class="modal-content login-box">
+        <span class="close" onclick="closeEditModal()">&times;</span>
+        <h2>Actualizar Usuario</h2>
+        <form id="updateUsuarioForm" action="/update_usuario" method="post">
+            <div class="user-box">
+                <input type="hidden" id="usuarioId" name="id">
+            </div>
+            <div class="user-box">
+                <input type="text" id="updateNombreUsuario" name="nombre" required="">
+                <label>Nombre actualizado</label>
+            </div>
+            <div class="user-box">
+                <input type="text" id="updateApellidoUsuario" name="apellido" required="">
+                <label>Apellido actualizado</label>
+            </div>
+            <div class="user-box">
+                <input type="text" id="updateCiUsuario" name="ci" required="">
+                <label>CI actualizado</label>
+            </div>
+            <div class="user-box">
+                <input type="text" id="updateRolUsuario" name="rol" required="">
+                <label>Rol actualizado</label>
+            </div>
+            <div class="user-box">
+                <input type="text" id="updateUsernameUsuario" name="username" required="">
+                <label>Username actualizado</label>
+            </div>
+            <div class="user-box">
+                <input type="number" id="updateEstadoUsuario" name="estado" required="">
+                <label>Estado actualizado</label>
+            </div>
+            <center>
+                <a href="#" onclick="document.getElementById('updateUsuarioForm').submit(); return false;">
+                    Actualizar Usuario
+                    <span></span>
+                </a>
+            </center>
+        </form>
+    </div>
+</div>
+
+<script>
+    function showEditModal(id, nombre, apellido, ci, rol, username, estado) {
+        document.getElementById('usuarioId').value = id;
+        document.getElementById('updateNombreUsuario').value = nombre;
+        document.getElementById('updateApellidoUsuario').value = apellido;
+        document.getElementById('updateCiUsuario').value = ci;
+        document.getElementById('updateRolUsuario').value = rol;
+        document.getElementById('updateUsernameUsuario').value = username;
+        document.getElementById('updateEstadoUsuario').value = estado;
+        document.getElementById('editModal').style.display = 'block';
+    }
+
+    function closeEditModal() {
+        document.getElementById('editModal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        if (event.target == document.getElementById('editModal')) {
+            closeEditModal();
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,197 @@
+{% extends './index.html' %}
+
+{% block title %}
+Clases
+{% endblock %}
+
+{% block body %}
+<div class="table-data">
+    <div class="order">
+        <main class="table" id="customers_table">
+            <section class="table__header">
+                <h1>Gestión de Clases</h1>
+                <div class="input-group">
+                    <input type="search" placeholder="Buscar Clase...">
+                    <img src="/static/img/search.png" alt="">
+                </div>
+                
+                <div class="export__file">
+                    <label for="export-file" class="export__file-btn" title="Exportar Archivo"></label>
+                    <input type="checkbox" id="export-file">
+                    <div class="export__file-options">
+                        <label>Exportar Como &nbsp; &#10140;</label>
+                        <label for="export-file" id="toPDF">PDF <img src="/static/img/pdf.png" alt=""></label>
+                        <label for="export-file" id="toJSON">JSON <img src="/static/img/json.png" alt=""></label>
+                        <label for="export-file" id="toCSV">CSV <img src="/static/img/csv.png" alt=""></label>
+                        <label for="export-file" id="toEXCEL">EXCEL <img src="/static/img/excel.png" alt=""></label>
+                    </div>
+                </div>
+            </section>
+            <section class="table__body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th> Id <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Materia <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Docente <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Aula <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Horario <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Estado <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Acciones <span class="icon-arrow">&UpArrow;</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for clase in clases %}
+                        <tr>
+                            <td>{{ clase.id }}</td>
+                            <td>{{ clase.materia_nombre }}</td>
+                            <td>{{ clase.docente_nombre }}</td>
+                            <td>{{ clase.aula_nombre }}</td>
+                            <td>{{ clase.horario }}</td>
+                            <td>{{ clase.estado }}</td>
+                            <td>
+                                <form action="/delete_clase/{{ clase.id }}" method="post" style="display:inline;">
+                                    <input type="submit" value="Inactivar">
+                                </form>
+                                <button type="button" onclick="showEditModal('{{ clase.id }}', '{{ clase.materia_id }}', '{{ clase.docente_id }}', '{{ clase.aula_id }}', '{{ clase.horario }}', '{{ clase.estado }}')">Editar</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <div class="todo">
+        <div class="head">
+            <h3>Tareas</h3>            
+        </div>
+        <form id="addClaseForm" action="/add_clase" method="post">
+            <ul class="todo-list">
+                <li class="completed">
+                    <div class="container">
+                        <select name="materia_id" class="input" required="">
+                            <option value=""></option>
+                            {% for materia in materias %}
+                            <option class="optionDocente" value="{{ materia.id }}">{{ materia.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                        <label class="label">Seleccione Materia</label>
+                    </div>                
+                </li>
+                <li class="not-completed">
+                    <div class="container">
+                        <select name="docente_id" class="input" required="">
+                            <option></option>
+                            {% for docente in docentes %}
+                            <option class="optionDocente" value="{{ docente.id }}">{{ docente.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                        <label class="label">Seleccione Docente</label>
+                    </div>                
+                </li>
+                <li class="completed">
+                    <div class="container">
+                        <select name="aula_id" class="input" required="">
+                            <option value=""></option>
+                            {% for aula in aulas %}
+                            <option class="optionDocente" value="{{ aula.id }}">{{ aula.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                        <label class="label">Seleccione Aula</label>
+                    </div>                
+                </li>
+                <li class="not-completed">
+                    <div class="container">
+                        <input type="text" name="horario" class="input" required="">
+                        <label class="label">Horario</label>
+                    </div>                
+                </li>
+                <li class="completed">
+                    <div class="container">
+                        <input type="number" name="estado" class="input" required="">
+                        <label class="label">Estado</label>
+                    </div>                
+                </li>
+                <li class="not-completed">
+                    <button class="button" type="submit" value="Agregar Clase">Agregar Clase</button>
+                </li>
+            </ul>
+        </form>
+    </div>
+</div>
+
+<!-- Modal para Actualizar Clase -->
+<div id="editModal" class="modal">
+    <div class="modal-content login-box">
+        <span class="close" onclick="closeEditModal()">&times;</span>
+        <h2>Actualizar Clase</h2>
+        <form id="updateClaseForm" action="/update_clase" method="post">
+            <div class="user-box">
+                <input type="hidden" id="claseId" name="id">
+            </div>
+            <div class="user-box">
+                <select id="updateMateriaId" name="materia_id" required="">
+                    <option value="">Seleccione Materia</option>
+                    {% for materia in materias %}
+                    <option value="{{ materia.id }}">{{ materia.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="user-box">
+                <select id="updateDocenteId" name="docente_id" required="">
+                    <option value="">Seleccione Docente</option>
+                    {% for docente in docentes %}
+                    <option value="{{ docente.id }}">{{ docente.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="user-box">
+                <select id="updateAulaId" name="aula_id" required="">
+                    <option value="">Seleccione Aula</option>
+                    {% for aula in aulas %}
+                    <option value="{{ aula.id }}">{{ aula.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="user-box">
+                <input type="text" id="updateHorario" name="horario" required="">
+                <label>Horario actualizado</label>
+            </div>
+            <div class="user-box">
+                <input type="number" id="updateEstado" name="estado" required="">
+                <label>Estado actualizado</label>
+            </div>
+            <center>
+                <a href="#" onclick="document.getElementById('updateClaseForm').submit(); return false;">
+                    Actualizar Clase
+                    <span></span>
+                </a>
+            </center>
+        </form>
+    </div>
+</div>
+
+<script>
+    function showEditModal(id, materia_id, docente_id, aula_id, horario, estado) {
+        document.getElementById('claseId').value = id;
+        document.getElementById('updateMateriaId').value = materia_id;
+        document.getElementById('updateDocenteId').value = docente_id;
+        document.getElementById('updateAulaId').value = aula_id;
+        document.getElementById('updateHorario').value = horario;
+        document.getElementById('updateEstado').value = estado;
+        document.getElementById('editModal').style.display = 'block';
+    }
+
+    function closeEditModal() {
+        document.getElementById('editModal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        if (event.target == document.getElementById('editModal')) {
+            closeEditModal();
+        }
+    }
+</script>
+{% endblock %}

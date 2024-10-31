@@ -1,0 +1,95 @@
+body {
+    background-image: url('/static/img/bg3.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    color: white;
+    font-family: Arial, sans-serif;
+    height: 100vh; /* Asegura que el body ocupe toda la altura de la ventana */
+    margin: 0;
+}
+
+
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 20px;
+}
+
+.form-container, .table-container {
+    background-color: rgba(34, 34, 34, 0.8); /* Color negro con transparencia */
+    padding: 20px;
+    border-radius: 10px;
+    width: 45%;
+}
+
+
+h1 {
+    text-align: center;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+}
+
+input, button, video, canvas {
+    width: 100%;
+    padding: 5px;
+    margin-top: 5px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+button {
+    background-color: purple;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: darkviolet;
+}
+
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid purple;
+    text-align: center;
+}
+
+.search-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.search-container input {
+    width: 70%;
+    padding: 5px;
+}
+
+.search-container button {
+    background-color: purple;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.search-container button:hover {
+    background-color: darkviolet;
+}

@@ -1,0 +1,131 @@
+{% extends './index.html' %}
+
+{% block title %}
+Carreras
+{% endblock %}
+
+{% block body %}
+<div class="table-data">
+    <div class="order">
+        <main class="table" id="customers_table">
+            <section class="table__header">
+                <h1>Gestión de Carreras</h1>
+                <div class="input-group">
+                    <input type="search" placeholder="Buscar Carrera...">
+                    <img src="/static/img/search.png" alt="">
+                </div>
+                
+                <div class="export__file">
+                    <label for="export-file" class="export__file-btn" title="Exportar Archivo"></label>
+                    <input type="checkbox" id="export-file">
+                    <div class="export__file-options">
+                        <label>Exportar Como &nbsp; &#10140;</label>
+                        <label for="export-file" id="toPDF">PDF <img src="/static/img/pdf.png" alt=""></label>
+                        <label for="export-file" id="toJSON">JSON <img src="/static/img/json.png" alt=""></label>
+                        <label for="export-file" id="toCSV">CSV <img src="/static/img/csv.png" alt=""></label>
+                        <label for="export-file" id="toEXCEL">EXCEL <img src="/static/img/excel.png" alt=""></label>
+                    </div>
+                </div>
+            </section>
+            <section class="table__body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th> Id <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Nombre <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Estado <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Acciones <span class="icon-arrow">&UpArrow;</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for carrera in carreras %}
+                        <tr>
+                            <td>{{ carrera.id }}</td>
+                            <td>{{ carrera.nombre }}</td>
+                            <td>{{ carrera.estado }}</td>
+                            <td>
+                                <form action="/delete_carrera/{{ carrera.id }}" method="post" style="display:inline;">
+                                    <input type="submit" value="Inactivar">
+                                </form>
+                                <button type="button" onclick="showEditModal('{{ carrera.id }}', '{{ carrera.nombre }}', '{{ carrera.estado }}')">Editar</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <div class="todo">
+        <div class="head">
+            <h3>Tareas</h3>            
+        </div>
+        <form id="addCarreraForm" action="/add_carrera" method="post">
+            <ul class="todo-list">
+                <li class="completed">
+                    <div class="container">
+                        <input type="text" name="nombre" class="input" required="">
+                        <label class="label">Nombre de la carrera</label>
+                    </div>                
+                </li>
+                <li class="not-completed">
+                    <div class="container">
+                        <input type="number" name="estado" class="input" required="">
+                        <label class="label">Estado de la carrera</label>
+                    </div>                
+                </li>
+                <li class="completed">
+                    <button class="button" type="submit" value="Agregar Carrera">Agregar Carrera</button>
+                </li>
+            </ul>
+        </form>
+    </div>
+</div>
+
+<!-- Modal para Actualizar Carrera -->
+<div id="editModal" class="modal">
+    <div class="modal-content login-box">
+        <span class="close" onclick="closeEditModal()">&times;</span>
+        <h2>Actualizar Carrera</h2>
+        <form id="updateCarreraForm" action="/update_carrera" method="post">
+            <div class="user-box">
+                <input type="hidden" id="carreraId" name="id">
+            </div>
+            <div class="user-box">
+                <input type="text" id="updateNombreCarrera" name="nombre" required="">
+                <label>Nombre actualizado</label>
+            </div>
+            <div class="user-box">
+                <input type="number" id="updateEstadoCarrera" name="estado" required="">
+                <label>Estado actualizado</label>
+            </div>
+            <center>
+                <a href="#" onclick="document.getElementById('updateCarreraForm').submit(); return false;">
+                    Actualizar Carrera
+                    <span></span>
+                </a>
+            </center>
+        </form>
+    </div>
+</div>
+
+<script>
+    function showEditModal(id, nombre, estado) {
+        document.getElementById('carreraId').value = id;
+        document.getElementById('updateNombreCarrera').value = nombre;
+        document.getElementById('updateEstadoCarrera').value = estado;
+        document.getElementById('editModal').style.display = 'block';
+    }
+
+    function closeEditModal() {
+        document.getElementById('editModal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        if (event.target == document.getElementById('editModal')) {
+            closeEditModal();
+        }
+    }
+</script>
+{% endblock %}

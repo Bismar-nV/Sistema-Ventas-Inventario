@@ -1,0 +1,76 @@
+.contdatos{
+    margin-bottom: auto;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+.principal
+    {
+        width: auto;
+        height: auto;
+        border: 2px  solid black;
+        padding-top: 5px;
+        display: flex;
+        flex-direction: row;
+        vertical-align: middle;
+        margin: auto;
+    }
+#primario{
+        width: 50%;
+        margin: 15px;
+        padding: auto;
+        
+    }
+#secundario{
+    width: 50%;
+        margin: 15px;
+        padding: auto;
+    }
+.row{
+    display: flex;
+    flex-direction: row;
+    vertical-align: middle;
+}
+.separar1{
+    width: 50vw;
+    margin-right: 10px;
+}
+.separar2{
+    width: 50vw;
+}
+.derecha{
+    text-align: right;
+}
+#div1{
+    height: 25%;
+}
+
+.input {
+    color: #8707ff;
+    border: 2px solid #8707ff;
+    border-radius: 10px;
+    padding: 10px 25px;
+    background: transparent;
+    max-width: 190px;
+}
+    
+.input:active {
+    box-shadow: 2px 2px 15px #8707ff inset;
+}
+    
+#tabla{
+    width: 90vw;
+    border-bottom: 2px solid rgb(70, 178, 139);
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}

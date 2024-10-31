@@ -1,0 +1,75 @@
+.main content {
+    position: fixed;
+    height: 100%;
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #ecf0f1;
+}
+.row{
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-right: -10px;
+    margin-left: -10px;
+    margin-bottom: -10px;
+}
+
+.card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+}
+
+.card img {
+    width: 50px;
+    margin-bottom: 10px;
+}
+
+.card p {
+    margin: 5px 0;
+}
+
+
+
+/* contenido style*/
+.contenidoPrimaria{
+    background-color: aquamarine, 0.5;
+    padding: 10px;
+    border: 2px solid black;
+    border-radius: 10px;
+    border-top-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+    margin-bottom: 8px;
+    display: flex;
+    margin-top: -9px;
+    /*flex-direction: column;*/
+}
+
+.contenidoPrimaria #plat1 {
+    margin-left: auto; /* Esto alinea el elemento a la derecha */
+}
+
+.contenidoPrimaria #plat2 {
+    margin: 0 auto; /* Esto centra el elemento horizontalmente */
+}
+
+.contenidoPrimaria #plat3 {
+    margin-left: auto; /* Esto alinea el elemento a la derecha */
+}
+
+
+.contenidoSecundaria{
+    width: 100%;
+    z-index: 50;
+    height: 100%;
+    background-color: aqua, 0.5;
+    padding: 10px;
+    border: 2px solid black;
+    border-radius: 10px;
+    border-top-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+}

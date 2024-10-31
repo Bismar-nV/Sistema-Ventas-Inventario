@@ -1,0 +1,215 @@
+{% extends './index.html' %}
+
+{% block title %}
+Docentes
+{% endblock %}
+
+{% block body %}
+<div class="table-data">
+    <div class="order">
+        <main class="table" id="customers_table">
+            <section class="table__header">
+                <h1>Gestión de Docentes</h1>
+                <div class="input-group">
+                    <input type="search" placeholder="Buscar Docente...">
+                    <img src="/static/img/search.png" alt="">
+                </div>
+                
+                <!--div class="export__file">
+                    <label for="export-file" class="export__file-btn" title="Exportar Archivo"></label>
+                    <input type="checkbox" id="export-file">
+                    <div class="export__file-options">
+                        <label>Exportar Como &nbsp; &#10140;</label>
+                        <label for="export-file" id="toPDF">PDF <img src="/static/img/pdf.png" alt=""></label>
+                        <label for="export-file" id="toJSON">JSON <img src="/static/img/json.png" alt=""></label>
+                        <label for="export-file" id="toCSV">CSV <img src="/static/img/csv.png" alt=""></label>
+                        <label for="export-file" id="toEXCEL">EXCEL <img src="/static/img/excel.png" alt=""></label>
+                    </div>
+                </div-->
+            </section>
+            <section class="table__body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th> Id <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Nombre <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Apellido <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Correo <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> CI <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Foto <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Estado <span class="icon-arrow">&UpArrow;</span></th>
+                            <th> Acciones <span class="icon-arrow">&UpArrow;</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for docente in docentes %}
+                        <tr>
+                            <td>{{ docente.id }}</td>
+                            <td>{{ docente.nombre }}</td>
+                            <td>{{ docente.apellido }}</td>
+                            <td>{{ docente.email }}</td>
+                            <td>{{ docente.ci }}</td>
+                            <td><img src="{{ url_for('static', filename=docente.foto) }}" width="50"></td>
+                            <td>{{ 'Activo' if docente.estado == 1 else 'Inactivo' }}</td>
+                            <td>
+                                <form action="/delete_docente/{{ docente.id }}" method="post" style="display:inline;">
+                                    <input type="submit" value="Inactivar">
+                                </form>
+                                <button type="button" onclick="showEditModal('{{ docente.id }}', '{{ docente.nombre }}', '{{ docente.apellido }}', '{{ docente.email }}', '{{ docente.ci }}', '{{ docente.foto }}', '{{ docente.estado }}')">Editar</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <div class="todo">
+        <div class="head">
+            <h3>Tareas</h3>            
+        </div>
+        <form id="addDocenteForm" action="/add_docente" method="post">
+            <ul class="todo-list">
+                <li class="completed">
+                    <div class="container">
+                        <input type="text" name="nombre" class="input" required="">
+                        <label class="label">Nombre del docente</label>
+                    </div>                
+                </li>
+                <li class="not-completed">
+                    <div class="container">
+                        <input type="text" name="apellido" class="input" required="">
+                        <label class="label">Apellido del docente</label>
+                    </div>                
+                </li>
+                <li class="completed">
+                    <div class="container">
+                        <input type="email" name="email" class="input" required="">
+                        <label class="label">Correo del docente</label>
+                    </div>                
+                </li>
+                <li class="not-completed">
+                    <div class="container">
+                        <input type="text" name="ci" class="input" required="">
+                        <label class="label">Carnet de Identidad</label>
+                    </div>                
+                </li>
+                <li class="completed">
+                    <div class="container">
+                        <button class="button1" type="button" onclick="capturePhoto()">Capturar Foto</button>
+                    </div>                
+                </li>
+                <li class="not-completed">
+                    <button class="button" type="submit">Agregar Docente</button>
+                </li>
+            </ul>
+        </form>
+    </div>
+</div>
+
+<!-- Modal para Actualizar Docente -->
+<div id="editModal" class="modal">
+    <div class="modal-content login-box">
+        <span class="close" onclick="closeEditModal()">&times;</span>
+        <h2>Actualizar Docente</h2>
+        <form id="updateDocenteForm" action="/update_docente" method="post">
+            <div class="user-box">
+                <input type="hidden" id="docenteId" name="id">
+            </div>
+            <div class="user-box">
+                <input type="text" id="updateNombreDocente" name="nombre" required="">
+                <label>Nombre actualizado</label>
+            </div>
+            <div class="user-box">
+                <input type="text" id="updateApellidoDocente" name="apellido" required="">
+                <label>Apellido actualizado</label>
+            </div>
+            <div class="user-box">
+                <input type="email" id="updateEmailDocente" name="email" required="">
+                <label>Correo actualizado</label>
+            </div>
+            <div class="user-box">
+                <input type="text" id="updateCIDocente" name="ci" required="">
+                <label>CI actualizado</label>
+            </div>
+            <div class="user-box">
+                <input type="hidden" id="updateFotoDocente" name="foto">
+                <button type="button" onclick="capturePhoto()">Capturar Foto</button>
+                <img id="updateCapturedImage" width="320" height="240" style="display:none;">
+            </div>
+            <!--div class="user-box">
+                <input type="number" id="updateEstadoDocente" name="estado" required="">
+                <label>Estado actualizado</label>
+            </div-->
+            <div class="user-box">
+                <select id="updateEstadoDocente" name="estado" required="">
+                    <option value="1">Activo</option>
+                    <option value="0">Inactivo</option>
+                </select>
+                <label>Estado actualizado</label>
+            </div>
+            <center>
+                <a href="#" onclick="document.getElementById('updateDocenteForm').submit(); return false;">
+                    Actualizar Docente
+                    <span></span>
+                </a>
+            </center>
+        </form>
+    </div>
+</div>
+
+<script>
+    function capturePhoto() {
+        const ci = document.querySelector('input[name="ci"]').value;
+        const nombre = document.querySelector('input[name="nombre"]').value;
+        const apellido = document.querySelector('input[name="apellido"]').value;
+        const email = document.querySelector('input[name="email"]').value;
+
+        if (!ci || !nombre || !apellido || !email) {
+            alert('Por favor, complete los campos de ci, nombre, apellido y correo antes de capturar la foto.');
+            return;
+        }
+
+        fetch('/capture_photo', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ci, nombre, apellido, email }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert('Foto capturada y guardada exitosamente.');
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+    
+
+    function showEditModal(id, nombre, apellido, email, ci, foto, estado) {
+        document.getElementById('docenteId').value = id;
+        document.getElementById('updateNombreDocente').value = nombre;
+        document.getElementById('updateApellidoDocente').value = apellido;
+        document.getElementById('updateEmailDocente').value = email;
+        document.getElementById('updateCIDocente').value = ci;
+        document.getElementById('updateEstadoDocente').value = estado;
+        document.getElementById('updateFotoDocente').value = foto;
+        var updateCapturedImage = document.getElementById('updateCapturedImage');
+        updateCapturedImage.src = foto ? "{{ url_for('static', filename='" + foto + "') }}" : "";
+        updateCapturedImage.style.display = foto ? 'block' : 'none';
+        document.getElementById('editModal').style.display = 'block';
+    }
+
+    function closeEditModal() {
+        document.getElementById('editModal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        if (event.target == document.getElementById('editModal')) {
+            closeEditModal();
+        }
+    }
+</script>
+{% endblock %}

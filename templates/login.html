@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/static/css/login/styles.css">
+    <link rel="stylesheet" href="/static/css/login/imputs.css">
+</head>
+<body>
+    <div class="login-box">
+        <form action="/login" method="post">
+          <div class="user-box">
+            <input type="text" name="username" required="">
+            <label>Username</label>
+          </div>
+          <div class="user-box">
+            <input type="password" name="password" required="">
+            <label>Password</label>
+          </div>
+          <center>
+          <button type="submit">SEND</button>
+          <button type="button" id="showRegisterForm">REGISTER</button>          
+        </center>
+        </form>
+        
+      </div>
+    <script src="/static/js/script.js"></script>
+    <script>
+      document.getElementById('showRegisterForm').addEventListener('click', function() {
+          document.getElementById('loginForm').style.display = 'none';
+          document.getElementById('addUsuarioForm').style.display = 'block';
+      });
+  </script>
+</body>
+</html>
